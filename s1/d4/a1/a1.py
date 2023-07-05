@@ -1,3 +1,5 @@
+import sys
+
 # Step 1: Set up initial data structures
 menu = []
 orders = {}
@@ -43,6 +45,7 @@ def update_availability():
 
 # Step 3: Implement order management features
 def take_order():
+    global order_id_counter
     customer_name = input("Enter customer name: ")
     order = {"order_id": order_id_counter, "customer_name": customer_name, "status": "received", "dishes": []}
     
