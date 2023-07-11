@@ -10,6 +10,7 @@ CORS(app)
 connected_clients = set()
 
 # Set up initial data structures
+messages = []
 menu = []
 orders = {}
 order_id_counter = 1
@@ -97,8 +98,6 @@ def take_order():
     else:
         return "No dishes added to the order.", 400
 
-
-
 # Helper function to find a dish by ID
 def find_dish(dish_id):
     for dish in menu:
@@ -109,15 +108,15 @@ def find_dish(dish_id):
 # Route to update the status of an order
 @app.route('/orders/<order_id>', methods=['PUT'])
 def update_order_status(order_id):
+    order_id = int(order_id)  # Convert order_id to an integer
     if order_id in orders:
-        status = request.get_json()['status']
-        orders[order_id]["status"] = status
+        status = request.json['status']
+        orders[order_id]['status'] = status
         write_data_to_files()
         return f"Order {order_id} status updated to {status}."
     else:
         return f"No order found with ID {order_id}.", 404
     
-
 async def handle_websocket(websocket, path):
     connected_clients.add(websocket)
     
@@ -134,12 +133,25 @@ def broadcast(message):
     for client in connected_clients:
         asyncio.ensure_future(client.send(message))
 
-start_server = websockets.serve(handle_websocket, 'localhost', 8000)
+start_server = websockets.serve(handle_websocket, 'localhost', 7000)   
 
-# Route to review all orders
+
 @app.route('/orders', methods=['GET'])
 def review_orders():
     return jsonify(orders)
+
+# Route to receive and store incoming messages
+@app.route('/messages', methods=['POST'])
+def receive_message():
+    data = request.get_json()
+    message = data['message']
+    messages.append(message)
+    return jsonify({'status': 'success'})
+
+# Route to retrieve all messages
+@app.route('/messages', methods=['GET'])
+def get_messages():
+    return jsonify(messages)
 
 # Route to handle invalid requests
 @app.route('/error', methods=['GET'])
@@ -148,6 +160,7 @@ def handle_error():
 
 # Main program loop
 if __name__ == '__main__':
-    asyncio.get_event_loop().run_until_complete(start_server)
     read_initial_data()
     app.run(debug=True, port=11000)
+    # asyncio.get_event_loop().run_until_complete(start_server)
+    # asyncio.get_event_loop().run_forever()
