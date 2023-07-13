@@ -1,0 +1,87 @@
+<style>
+    .todo-app {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+  
+    .todo-app h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+  
+    .todo-app input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #f1f1f1;
+      color: #333;
+    }
+  
+    .todo-app button {
+      padding: 10px 20px;
+      background-color: #4285f4;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: background-color 0.3s ease;
+    }
+  
+    .todo-app button:hover {
+      background-color: #3367d6;
+    }
+  
+    .todo-app ul {
+      list-style-type: none;
+      padding: 0;
+    }
+  
+    .todo-app li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  
+    .todo-app button.delete-btn {
+      background-color: red;
+    }
+  
+    .todo-app button.update-btn {
+      background-color: green;
+    }
+  </style>
+  
+  
+  
+  
+  <div class="todo-app">
+    <h2>Todo App</h2>
+    <input [(ngModel)]="newTodo" placeholder="Add a new task">
+    <button (click)="addTodo()">Add</button>
+  
+    <ul>
+      <li *ngFor="let todo of todos; let i = index">
+        <span>{{ todo.text }}</span>
+        <button (click)="deleteTodo(i)" class="delete-btn">Delete</button>
+        <button (click)="toggleStatus(i)" class="update-btn">
+          {{ todo.status === 'Pending' ? 'Completed' : 'Pending' }}
+        </button>
+      </li>
+    </ul>
+  
+
+  </div>
+  
